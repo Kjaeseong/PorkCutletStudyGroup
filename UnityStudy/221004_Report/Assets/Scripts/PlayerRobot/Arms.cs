@@ -4,16 +4,32 @@ using UnityEngine;
 
 public class Arms : MonoBehaviour
 {
-    public Enemy Enemy;
-    public Body Body;
-    public Head Head;
+    private Body _body;
+    private Head _head;
+    private SkillSet _skill;
+    public GameObject AttackColliderPrefab;
+    private GameObject _attackCollider;
+    private AttackCollider _collider;
 
-    public void Attack(bool UseSkill, int damage)
+    public GameObject LeftArm;
+    public GameObject RightArm;
+
+    private void Start() 
     {
-        if(Enemy != null)
+        _head = GetComponentInParent<Head>();
+        _body = GetComponentInParent<Body>();
+        _skill = GetComponentInParent<SkillSet>();
+        _attackCollider = Instantiate(AttackColliderPrefab);
+        _attackCollider.SetActive(false);
+        _collider = _attackCollider.GetComponent<AttackCollider>();
+    }
+
+    public void Attack(bool UseSkill, int pattern)
+    {
+        if(!_attackCollider.activeSelf)
         {
-            if(Head)
-            StartCoroutine(NormalAttack(damage));
+            _skill.SelectPattern(pattern);
+            _attackCollider.SetActive(true);
         }
     }
 
@@ -22,15 +38,6 @@ public class Arms : MonoBehaviour
         transform.rotation = Quaternion.Euler(Step * -90f, 0f, 0f);
     }
 
-    public IEnumerator NormalAttack(int damage)
-    {
-        Body.CanAttack = false;
-        Rotate(1);
-        Enemy.TakeDamage(damage);
-
-        yield return new WaitForSeconds(1f);
-        Rotate(0);
-        Body.CanAttack = true;
-    }
+    
 
 }
