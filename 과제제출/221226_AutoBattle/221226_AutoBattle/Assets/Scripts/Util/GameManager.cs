@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class GameManager : SingletonBehaviour<GameManager>
 {
-    public List<Player> Player { get; set; }
+    [field: SerializeField] public List<Player> Player { get; set; }
     [field: SerializeField] public float UpdateCycle { get; set; }
 
     public WaitForSeconds Cycle { get; private set; }
@@ -22,5 +22,8 @@ public class GameManager : SingletonBehaviour<GameManager>
         
     }
 
-
+    public void PlayerDie(int PlayerIndex)
+    {
+        Debug.Log($"{PlayerIndex}번 플레이어 패배");
+    }
 }

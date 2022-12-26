@@ -15,7 +15,7 @@ public class Player : MonoBehaviour
     public float Ap { get; private set; }
 
     private int _playerIndex;
-    private Player _enemy;
+    [SerializeField] private Player _enemy;
     private float _actionGauge;
 
 
@@ -23,44 +23,40 @@ public class Player : MonoBehaviour
     private PlayerMovement _movement;
     private PlayerUI _ui;
     private Coroutine _apCoroutine;
-    private Coroutine _atkCoroutine;
+    private Coroutine _hpCoroutine;
 
 
+    private void OnEnable() 
+    {
+        
+    }
 
     private void Start() 
     {
         _movement = GetComponentInChildren<PlayerMovement>();
         _ui = GetComponentInChildren<PlayerUI>();
-
         PlayerInit();
     }
 
-
     private void PlayerInit()
     {
-        GameManager.Instance.Player.Add(this);
-        _playerIndex = GameManager.Instance.Player.Count - 1;
+        for(int i = 0; i < GameManager.Instance.Player.Count; i++)
+        {
+            if(GameManager.Instance.Player[i] == this)
+            {
+                _playerIndex = i;
+            }
+            else
+            {
+                _enemy = GameManager.Instance.Player[i];
+            }
+        }
 
         MeshRenderer _playerMesh = _playerModel.GetComponent<MeshRenderer>();
         _playerMesh.material = _material;
 
-        RefreshApGauge(true);
-    }
-
-    /// <summary>
-    /// 행동 게이지 갱신을 위한 함수
-    /// </summary>
-    /// <param name="Switch">true = 실행 / false = 정지</param>
-    public void RefreshApGauge(bool Switch)
-    {
-        if(Switch)
-        {
-            _apCoroutine = StartCoroutine(ApGaugeCoroutine());
-        }
-        else
-        {
-            StopCoroutine(_apCoroutine);
-        }
+        Hp = _maxHp;
+        Ap = 0f;
     }
 
     private IEnumerator ApGaugeCoroutine()
@@ -68,38 +64,53 @@ public class Player : MonoBehaviour
         while(true)
         {
             yield return GameManager.Instance.Cycle;
-
             _actionGauge += GameManager.Instance.UpdateCycle * _speed;
-            // 게이지 UI 갱신 함수
+            _ui.RefreshGauge(_ui.ApGauge, _actionGauge);
 
             if(_actionGauge >= 1)
             {
                 _actionGauge = 0f;
-                // 공격판정
+                Attack();
+                yield break;
+            }
+        }
+    }
+
+    private IEnumerator HpGaugeCoroutine(float Damage)
+    {
+        float result = Hp - Damage;
+
+        while(true)
+        {
+            yield return GameManager.Instance.Cycle;
+            Hp -= 0.1f;
+            _ui.RefreshGauge(_ui.HpGauge, Hp / 100);
+
+            if(Hp <= 0)
+            {
+                GameManager.Instance.PlayerDie(_playerIndex);
+                yield break;
             }
 
+            if(result >= Hp)
+            {
+                yield break;
+            }
         }
     }
 
     private void Attack()
     {
-        
+        _enemy.TakeDamage(AtkValue);
     }
 
-    /// <summary>
-    /// 상대 플레이어에게 데미지 입힘
-    /// </summary>
     public void TakeDamage(float Damage)
     {
-        _hp -= Damage;
-        _ui.Refresh(_ui.HpGauge, -Damage);
+        _hpCoroutine = StartCoroutine(HpGaugeCoroutine(Damage));
+        _ui.DamageTextSet(Damage);
     }
 
-    public void UpdateData()
-    {
-        _movement.UpdateData();
-        _ui.UpdateData();
-    }
+
 
 
     
