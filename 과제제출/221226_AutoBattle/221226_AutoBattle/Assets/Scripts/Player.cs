@@ -22,12 +22,9 @@ public class Player : MonoBehaviour
     [SerializeField] private PlayerUI _ui;
     private Coroutine _apCoroutine;
     private Coroutine _hpCoroutine;
+    private Coroutine _moveCoroutine;
 
-
-    private void OnEnable() 
-    {
-        
-    }
+    private Vector3 _startPosition;
 
     private void Start() 
     {
@@ -58,6 +55,8 @@ public class Player : MonoBehaviour
 
         MeshRenderer _playerMesh = _playerModel.GetComponent<MeshRenderer>();
         _playerMesh.material = _material;
+
+        _startPosition = transform.position;
 
         Hp = _maxHp;
         Ap = 0f;
@@ -120,7 +119,11 @@ public class Player : MonoBehaviour
         _ui.DamageTextSet(Damage);
     }
 
-
+    private float GetDistTo(Vector3 Position)
+    {
+        float Distance = Vector3.Distance(Position, transform.position);
+        return Distance;
+    }
 
 
     

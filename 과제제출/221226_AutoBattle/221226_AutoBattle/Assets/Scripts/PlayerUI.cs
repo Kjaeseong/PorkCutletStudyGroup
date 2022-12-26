@@ -34,6 +34,11 @@ public class PlayerUI : MonoBehaviour
         _textStartPosition = _damageTransform.position;
     }
 
+    private void Update() 
+    {
+        transform.LookAt(Camera.main.transform.position);
+    }
+
     public void RefreshGauge(Image Target, float Value)
     {
         Target.fillAmount = Value;
