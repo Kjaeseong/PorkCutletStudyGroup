@@ -91,7 +91,7 @@ public class Player : MonoBehaviour
             yield return GameManager.Instance.Cycle;
             Hp -= 1f;
             _ui.RefreshGauge(_ui.HpGauge, Hp / 100);
-            Debug.Log("---");
+            
             if(Hp <= 0)
             {
                 GameManager.Instance.PlayerDie(_playerIndex);

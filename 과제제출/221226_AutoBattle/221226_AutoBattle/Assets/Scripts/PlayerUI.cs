@@ -36,7 +36,10 @@ public class PlayerUI : MonoBehaviour
 
     private void Update() 
     {
-        transform.LookAt(Camera.main.transform.position);
+        transform.LookAt(new Vector3(
+            Camera.main.transform.position.x,
+            0f,
+            Camera.main.transform.position.z));
     }
 
     public void RefreshGauge(Image Target, float Value)

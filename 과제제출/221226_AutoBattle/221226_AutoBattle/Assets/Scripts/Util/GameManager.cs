@@ -10,16 +10,9 @@ public class GameManager : SingletonBehaviour<GameManager>
     public WaitForSeconds Cycle { get; private set; }
 
 
-
-
     private void Awake() 
     {
         Cycle = new WaitForSeconds(UpdateCycle);
-    }
-
-    private void CreatePlayer()
-    {
-        
     }
 
     public void PlayerApUp()
