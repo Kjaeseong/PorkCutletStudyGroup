@@ -13,10 +13,12 @@ public class PlayerUI : MonoBehaviour
 
     [field: SerializeField] public Image HpGauge { get; set; }
     [field: SerializeField] public Image ApGauge { get; set; }
+    [field: SerializeField] public GameObject _damage { get; set; }
 
-    [SerializeField] private TextMeshProUGUI _damage;
-    [SerializeField] private float _textTime;
+    private TextMeshProUGUI _damageText;
     private RectTransform _damageTransform;
+    [SerializeField] private float _textTime;
+    private Vector3 _textStartPosition;
 
     private Player _player;
 
@@ -24,6 +26,13 @@ public class PlayerUI : MonoBehaviour
     private float[] _ap = new float[2];
     private StateIndex _stateIndex;
     private Coroutine _coroutine;
+
+    private void Start() 
+    {
+        _damageTransform = _damage.GetComponent<RectTransform>();
+        _damageText = _damage.GetComponentInChildren<TextMeshProUGUI>();
+        _textStartPosition = _damageTransform.position;
+    }
 
     public void RefreshGauge(Image Target, float Value)
     {
@@ -40,8 +49,8 @@ public class PlayerUI : MonoBehaviour
     {
         float Time = 0f;
         _damage.gameObject.SetActive(true);
-        _damage.text = "- " + Value.ToString();
-        _damageTransform.position = new Vector3(0f, 0f, 0f);
+        _damageText.text = "- " + Value.ToString();
+        _damageTransform.position = _textStartPosition;
 
         while(true)
         {

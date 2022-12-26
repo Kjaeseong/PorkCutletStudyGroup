@@ -15,13 +15,11 @@ public class Player : MonoBehaviour
     public float Ap { get; private set; }
 
     private int _playerIndex;
-    [SerializeField] private Player _enemy;
+    private Player _enemy;
     private float _actionGauge;
 
-
-
-    private PlayerMovement _movement;
-    private PlayerUI _ui;
+    [SerializeField] private PlayerMovement _movement;
+    [SerializeField] private PlayerUI _ui;
     private Coroutine _apCoroutine;
     private Coroutine _hpCoroutine;
 
@@ -33,10 +31,16 @@ public class Player : MonoBehaviour
 
     private void Start() 
     {
-        _movement = GetComponentInChildren<PlayerMovement>();
-        _ui = GetComponentInChildren<PlayerUI>();
         PlayerInit();
+        GameManager.Instance.PlayerApUp();
     }
+
+    public void ApGaugeUp()
+    {
+        StopAllCoroutines();
+        _apCoroutine = StartCoroutine(ApGaugeCoroutine());
+    }
+
 
     private void PlayerInit()
     {
@@ -57,6 +61,9 @@ public class Player : MonoBehaviour
 
         Hp = _maxHp;
         Ap = 0f;
+
+        _ui.RefreshGauge(_ui.HpGauge, Hp);
+        _ui.RefreshGauge(_ui.ApGauge, Ap);
     }
 
     private IEnumerator ApGaugeCoroutine()
@@ -64,7 +71,7 @@ public class Player : MonoBehaviour
         while(true)
         {
             yield return GameManager.Instance.Cycle;
-            _actionGauge += GameManager.Instance.UpdateCycle * _speed;
+            _actionGauge += GameManager.Instance.UpdateCycle * _speed * Time.deltaTime;
             _ui.RefreshGauge(_ui.ApGauge, _actionGauge);
 
             if(_actionGauge >= 1)
@@ -83,9 +90,9 @@ public class Player : MonoBehaviour
         while(true)
         {
             yield return GameManager.Instance.Cycle;
-            Hp -= 0.1f;
+            Hp -= 1f;
             _ui.RefreshGauge(_ui.HpGauge, Hp / 100);
-
+            Debug.Log("---");
             if(Hp <= 0)
             {
                 GameManager.Instance.PlayerDie(_playerIndex);
@@ -94,6 +101,7 @@ public class Player : MonoBehaviour
 
             if(result >= Hp)
             {
+                GameManager.Instance.PlayerApUp();
                 yield break;
             }
         }
@@ -101,11 +109,13 @@ public class Player : MonoBehaviour
 
     private void Attack()
     {
+        StopAllCoroutines();
         _enemy.TakeDamage(AtkValue);
     }
 
     public void TakeDamage(float Damage)
     {
+        StopAllCoroutines();
         _hpCoroutine = StartCoroutine(HpGaugeCoroutine(Damage));
         _ui.DamageTextSet(Damage);
     }

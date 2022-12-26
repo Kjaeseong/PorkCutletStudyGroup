@@ -147,6 +147,8 @@ MonoBehaviour:
   _maxAp: 1
   AtkValue: 10
   _speed: 24.2
+  _movement: {fileID: 0}
+  _ui: {fileID: 6718754432082866135}
 --- !u!1 &6718754430485143378
 GameObject:
   m_ObjectHideFlags: 0
@@ -333,7 +335,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &6718754430814388034
 RectTransform:
   m_ObjectHideFlags: 0
@@ -806,7 +808,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 595a13c7147a83845a45fc909b939000, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  <HpGauge>k__BackingField: {fileID: 0}
-  <ApGauge>k__BackingField: {fileID: 0}
-  _damage: {fileID: 0}
-  _textTime: 0
+  <HpGauge>k__BackingField: {fileID: 6718754431045417025}
+  <ApGauge>k__BackingField: {fileID: 6718754432077746683}
+  <_damage>k__BackingField: {fileID: 6718754430814388035}
+  _textTime: 2

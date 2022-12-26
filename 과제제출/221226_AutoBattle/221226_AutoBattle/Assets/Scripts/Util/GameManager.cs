@@ -22,6 +22,14 @@ public class GameManager : SingletonBehaviour<GameManager>
         
     }
 
+    public void PlayerApUp()
+    {
+        for(int i = 0; i < Player.Count; i++)
+        {
+            Player[i].ApGaugeUp();
+        }
+    }
+
     public void PlayerDie(int PlayerIndex)
     {
         Debug.Log($"{PlayerIndex}번 플레이어 패배");
